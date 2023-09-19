@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"strings"
+	"time"
 )
 
 var bookings = make([]userData, 0)
@@ -33,6 +34,7 @@ func main() {
 		userTickets = userTicketsAndValidation(userTickets, remainingTickets)
 
 		remainingTickets = ticketsBooking(remainingTickets, userTickets, firstName, lastName, email)
+		go sendTicket(userTickets, firstName, lastName, email)
 
 		fmt.Printf("%v %v booked %v tickets for the %v. %v's Email is %v\n", firstName, lastName, userTickets, conferenceName, firstName, email)
 		fmt.Printf("%v tickets are remaining\n", remainingTickets)
@@ -53,10 +55,10 @@ func greetUser(conference string, totalTickets int, remainingTickets uint) {
 }
 
 func nameInformationAndValidation(firstName string, lastName string) (string, string) {
-	fmt.Print("Enter your first name: ")
+	fmt.Print("Enter your first name: \n")
 	fmt.Scan(&firstName)
 
-	fmt.Print("Enter your last name: ")
+	fmt.Print("Enter your last name: \n")
 	fmt.Scan(&lastName)
 
 	for len(firstName) < 2 || len(lastName) < 2 {
@@ -71,7 +73,7 @@ func nameInformationAndValidation(firstName string, lastName string) (string, st
 }
 
 func emailInformationAndValidation(email string) string {
-	fmt.Print("Enter your email: ")
+	fmt.Print("Enter your email: \n")
 	fmt.Scan(&email)
 
 	for !strings.Contains(email, "@") {
@@ -116,4 +118,12 @@ func printFirstNames() []string {
 		firstNames = append(firstNames, booking.firstName)
 	}
 	return firstNames
+}
+
+func sendTicket(userTickets uint, firstName string, lastName string, email string) {
+	var ticket = fmt.Sprintf("%v tickets for %v %v", userTickets, firstName, lastName)
+	time.Sleep(10 * time.Second)
+	fmt.Println("############################")
+	fmt.Printf("Sending tickets: \n %v to email address %v\n", ticket, email)
+	fmt.Println("############################")
 }
